@@ -16,6 +16,7 @@
 
 package rkr.simplekeyboard.inputmethod.latin;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,11 +47,16 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.greedygame.android.agent.GreedyGameAgent;
+import com.greedygame.android.core.campaign.uii.BaseActivity;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import rkr.simplekeyboard.inputmethod.BaseApplication;
+import rkr.simplekeyboard.inputmethod.DummyActivity;
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.compat.EditorInfoCompatUtils;
 import rkr.simplekeyboard.inputmethod.compat.ViewOutlineProviderCompatUtils;
@@ -326,6 +332,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super();
         mSettings = Settings.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+
     }
 
     @Override
@@ -337,6 +344,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         super.onCreate();
+        Intent intent = new Intent(this, DummyActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
 
         mHandler.onCreate();
 
@@ -348,6 +358,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mRingerModeChangeReceiver, filter);
+
+
     }
 
     private void loadSettings() {
@@ -396,6 +408,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputView = view;
         mInsetsUpdater = ViewOutlineProviderCompatUtils.setInsetsOutlineProvider(view);
         updateSoftInputWindowLayoutParameters();
+
     }
 
     @Override

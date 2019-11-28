@@ -18,12 +18,20 @@ package rkr.simplekeyboard.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ImageView;
 
+import com.greedygame.android.core.campaign.uii.BaseActivity;
+
+import java.io.File;
+
+import rkr.simplekeyboard.inputmethod.BaseApplication;
 import rkr.simplekeyboard.inputmethod.R;
 import rkr.simplekeyboard.inputmethod.event.Event;
 import rkr.simplekeyboard.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
@@ -374,14 +382,36 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardView.closing();
         }
 
+
         updateKeyboardThemeAndContextThemeWrapper(
                 mLatinIME, KeyboardTheme.getKeyboardTheme(mLatinIME /* context */));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
 
-        mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
+        mKeyboardView =  mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
+        final String unitId = BaseApplication.unitId;
+        ImageView iv = mCurrentInputView.findViewById(R.id.adUnit);
+        View.OnClickListener unitClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BaseApplication.mGreedyGameAgent.showUII(unitId);
+            }
+        };
+
+        String path = BaseApplication.mGreedyGameAgent.getPath(unitId);
+        if (path != null) {
+            File file = new File(path);
+            if (file.exists()) {
+                Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath());
+                if (bm != null) {
+                    // Use it on your element which needs to be branded.
+                    iv.setImageBitmap(bm);
+                    iv.setOnClickListener(unitClick);
+                }
+            }
+        }
         return mCurrentInputView;
     }
 }
