@@ -2,12 +2,13 @@ package rkr.simplekeyboard.inputmethod;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.greedygame.android.agent.GreedyGameAgent;
 import com.greedygame.android.core.campaign.CampaignStateListener;
 
 public class DummyActivity extends Activity {
-
+    //TODO: GGCODE
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +24,8 @@ public class DummyActivity extends Activity {
 
                     @Override
                     public void onAvailable(String s) {
-
-
+                        Log.d("GG","Campaign Available");
+                        BaseApplication.startAdRefreshTimer();
                     }
 
                     @Override

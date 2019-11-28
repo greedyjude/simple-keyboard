@@ -268,6 +268,34 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mMainKeyboardFrame.setVisibility(visibility);
     }
 
+    public void showAds() {
+        //TODO GGCODE
+        if(mCurrentInputView != null){
+            ImageView iv = mCurrentInputView.findViewById(R.id.adUnit);
+            View.OnClickListener unitClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(BaseApplication.mGreedyGameAgent != null)
+                        BaseApplication.mGreedyGameAgent.showUII(BaseApplication.unitId);
+                }
+            };
+            if(BaseApplication.mGreedyGameAgent != null) {
+                String path = BaseApplication.mGreedyGameAgent.getPath(BaseApplication.unitId);
+                if (path != null) {
+                    File file = new File(path);
+                    if (file.exists()) {
+                        Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath());
+                        if (bm != null) {
+                            // Use it on your element which needs to be branded.
+                            iv.setImageBitmap(bm);
+                            iv.setOnClickListener(unitClick);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public enum KeyboardSwitchState {
         HIDDEN(-1),
         SYMBOLS_SHIFTED(KeyboardId.ELEMENT_SYMBOLS_SHIFTED),
@@ -391,27 +419,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
         mKeyboardView =  mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
-        final String unitId = BaseApplication.unitId;
-        ImageView iv = mCurrentInputView.findViewById(R.id.adUnit);
-        View.OnClickListener unitClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BaseApplication.mGreedyGameAgent.showUII(unitId);
-            }
-        };
 
-        String path = BaseApplication.mGreedyGameAgent.getPath(unitId);
-        if (path != null) {
-            File file = new File(path);
-            if (file.exists()) {
-                Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath());
-                if (bm != null) {
-                    // Use it on your element which needs to be branded.
-                    iv.setImageBitmap(bm);
-                    iv.setOnClickListener(unitClick);
-                }
-            }
-        }
         return mCurrentInputView;
     }
 }
